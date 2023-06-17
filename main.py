@@ -30,15 +30,22 @@ def procesar_elemento(elemento):
     clave,valor = elemento
     obj_mysql = MysqlConsultas()
     obj_postgres = PostgresConsultas()
-    print(clave, valor)
     data = obj_mysql.obtener_datos_por_estacion(clave)
-    print(f"total datos obtenidos de estacion {clave}", len(data))
+
+    print(f"total datos obtenidos de estacion: {clave} id: {valor} tot:", len(data))
     data_preciptacion = obj_mysql.obtener_datos_presipitacion_por_estacion(clave)
-    obj_postgres.construir_data(data,valor)
+
+    obj_postgres.construir_data(data,data_preciptacion,valor)
 
 def lanzar_paralelismo():
     dic_estaciones_con_id = obtener_estaciones_ids()
-    num_procesos = 2#multiprocessing.cpu_count() #4
+    #print(dic_estaciones_con_id)
+    ##########TEMP
+    primer_registro = next(iter(dic_estaciones_con_id.items()))
+    dic_estaciones_con_id = dict([primer_registro])
+    #print(dic_estaciones_con_id)
+    ######
+    num_procesos = 1#multiprocessing.cpu_count() #4
     pool = multiprocessing.Pool(processes=num_procesos)
     pool.map(procesar_elemento, dic_estaciones_con_id.items())
     pool.close()

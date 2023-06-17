@@ -3,6 +3,7 @@ import datetime
 import csv_util
 import constants
 
+
 class PostgresConsultas:
     def __init__(self):
         self.pg_conn = None
@@ -66,71 +67,115 @@ class PostgresConsultas:
             else:
                 estacion_sin_id.append(cod_estacion)
                 continue
-        return data,estacion_sin_id
+        return data, estacion_sin_id
 
     """
-    preparar datos para gardar en postgres por estacion
+    construir fecha de registro
     """
 
-    def construir_data(self, data_list, id_estacion):
+    def fecha_Registro(self, fila, hora):
+        return "{}-{}-{} {}:00:00".format(str(fila[1]),
+                                          str(fila[2]).zfill(2),
+                                          str(fila[3]).zfill(2),
+                                          str(hora).zfill(2))
+
+    """
+    preparar datos para guardar en postgres por estacion
+    """
+
+    def construir_data(self, data_list, data_precip, id_estacion):
         self._abrir_conexion()
-        schema = "convencionales2"
         id_admin = 0
         lista_horas = ['07', '13', '19']
         registros_dia_32 = []
+
+        data_tabla_temperatura = []
+        sql_tabla_temperatura = None
 
         for fila in data_list:
             if fila[3] > 31:
                 registros_dia_32.append(fila)
                 continue
-            try:
-                a=1
-                #self.ingresar_tabla_temperatura(schema, id_admin, id_estacion, lista_horas, fila)
-                ##ERR la columna «num_lecturas» no puede ser nula..
-                #self.ingresar_tabla_precipitacion(schema, id_admin, id_estacion, lista_horas, fila)
-            except Exception as e:
-                print("error fila ",fila)
 
-        if len(registros_dia_32)>0:
-            csv_util.csv_write_estcion_dia_32(registros_dia_32,constants.NOMBRE_CARPETA+'/'+constants.NOMBRE_ARCHIVO_DIA_32)
+            # formar matriz datos temperatura
+            datos_temp_return = self.ingresar_tabla_temperatura(id_admin, id_estacion, lista_horas, fila)
+            data_tabla_temperatura.extend(datos_temp_return[0])
+            sql_tabla_temperatura = datos_temp_return[1]
+
+            # self.ingresar_tabla_precipitacion(schema, id_admin, id_estacion, lista_horas, fila,data_precip)
+
+        # escribir registros con dias 32
+        if len(registros_dia_32) > 0:
+            csv_util.csv_write_estcion_dia_32(registros_dia_32,
+                                              constants.NOMBRE_CARPETA + '/' + constants.NOMBRE_ARCHIVO_DIA_32)
+
+        ##liempieza y guardar lote temperatura
+        data_tabla_temperatura = self.limpiar_registros_a_guardar(data_tabla_temperatura)
+        self.pg_cursor.executemany(sql_tabla_temperatura, data_tabla_temperatura)
+        self.pg_conn.commit()
+
         self._cerrar_conexion()
 
     """
-    construir fecha de registro
-    """
-    def fecha_Registro(self,fila,hora):
-        return "{}-{}-{} {}:00:00".format(str(fila[1]),
-                                          str(fila[2]).zfill(2),
-                                          str(fila[3]).zfill(2),
-                                          str(hora).zfill(2))
-    """
     ingresar datos en la tabla termperatura de las 7,13,19 (h)
     """
-    def ingresar_tabla_temperatura(self, schema, id_admin, id_estacion, horas, fila):
 
-        for index, item_hora in horas:
-            index = int(index)
-            fecha_historico = self.fecha_Registro(fila,item_hora)
+    def ingresar_tabla_temperatura(self, id_admin, id_estacion, horas, fila):
+
+        sql = f"INSERT INTO convencionales2._293161h " \
+              f"(id_estacion, id_usuario, fecha_toma, fecha_ingreso,term_seco,term_hmd) " \
+              f"values (%s,%s,%s,%s,%s,%s)"
+
+        datos_tre_horas = []
+        cont = 0
+        for item_hora in horas:
+            term_seco = fila[6 + cont]
+            term_hmd = fila[9 + cont]
+            fecha_historico = self.fecha_Registro(fila, item_hora)
             fecha_actual = str(datetime.datetime.now())
-            sql_termometro = f"INSERT INTO {schema}._293161h " \
-                             f"(id_estacion, id_usuario, fecha_toma, fecha_ingreso,term_seco,term_hmd) " \
-                             f"values ({id_estacion},{id_admin},'{fecha_historico}','{fecha_actual}',{fila[6 + index]},{fila[9 + index]})"
-            self.pg_cursor.execute(sql_termometro)
-            self.pg_conn.commit()
-
+            datos_tre_horas.append((id_estacion, id_admin, fecha_historico, fecha_actual, term_seco, term_hmd))
+            cont += cont
+        return datos_tre_horas, sql
 
     """
-    ingresar datos tabla precipitacion 171481h
+    limpiar datos temperatura
     """
-    def ingresar_tabla_precipitacion(self, schema, id_admin, id_estacion, horas, fila):
 
-        for index, item_hora in horas:
-            index = int(index)
-            fecha_historico = self.fecha_Registro(fila,item_hora)
-            fecha_actual = str(datetime.datetime.now())
-            sql_termometro = f"INSERT INTO {schema}._171481h " \
-                             f"(id_estacion, id_usuario, fecha_toma, fecha_ingreso,valor,num_lecturas) " \
-                             f"values ({id_estacion},{id_admin},'{fecha_historico}','{fecha_actual}',{fila[12 + index]},1)"
-            self.pg_cursor.execute(sql_termometro)
-            self.pg_conn.commit()
+    def limpiar_registros_a_guardar(self, data):
+        total_datos_ts = len(data)
+        total_datos_th = len(data)
+        total_out_range_ts = 0
+        total_out_range_th = 0
+        total_flag_ts = 0
+        total_flag_th = 0
 
+        nueva_lista = []
+        for fila in data:
+            nuevo_valor_ts = float(fila[4])
+            nuevo_valor_th = float(fila[5])
+
+            if nuevo_valor_ts in constants.VALUE_TO_FLAG:
+                total_flag_ts = total_flag_ts + 1
+                nuevo_valor_ts = constants.NEW_VALUE_TO_FLAG
+
+            if nuevo_valor_ts in constants.VALES_OUT_RANGE_TEMPERATURE:
+                nuevo_valor_ts = constants.NEW_VALUE_OUT_RANGE_TEMPERATURE
+                total_out_range_ts = total_out_range_ts + 1
+                # print("valor fuera de rango ",fila)
+
+            if nuevo_valor_th in constants.VALUE_TO_FLAG:
+                total_flag_th = total_flag_th + 1
+                nuevo_valor_th = constants.NEW_VALUE_TO_FLAG
+
+            if nuevo_valor_th in constants.VALES_OUT_RANGE_TEMPERATURE:
+                nuevo_valor_th = constants.NEW_VALUE_OUT_RANGE_TEMPERATURE
+                total_out_range_th = total_out_range_th + 1
+                # print("valor fuera de rango ",fila)
+
+            tupla_actualizada = (fila[0], fila[1], fila[2], fila[3], nuevo_valor_ts, nuevo_valor_th)
+            nueva_lista.append(tupla_actualizada)
+
+        print(f"total datos ts {total_datos_ts} out_range {total_out_range_ts} flags {total_flag_ts}")
+        print(f"total datos ts {total_datos_th} out_range {total_out_range_th} flags {total_flag_th}")
+
+        return nueva_lista

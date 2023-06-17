@@ -51,6 +51,6 @@ def crear_carpeta(nombre_carpeta, ruta_carpeta=None):
         os.mkdir(ruta_completa)
         print("Carpeta creada exitosamente.")
     except FileExistsError:
-        print("La carpeta ya existe.")
+        print(f"La carpeta ya existe. {nombre_carpeta}")
     except Exception as e:
         print("Error al crear la carpeta:", str(e))
