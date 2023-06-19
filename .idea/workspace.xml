@@ -5,19 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5cb6072d-6ce8-4433-a21b-8e8717a7bd3d" name="Changes" comment="first comit">
-      <change afterPath="$PROJECT_DIR$/notas.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/procesar_data_precipitacion.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/procesar_data_temperatura.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/csv_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mysql_conecction.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/mysql_conecction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/postgre_connection.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/postgre_connection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resultados/archivo_con_dia_32.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resultados/estaciones_sin_id.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resultados/dia32/63755_dia_32.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resultados/reporte.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/constants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/postgre_connection.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/postgre_connection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/procesar_data_temperatura.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/procesar_data_temperatura.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +28,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2RD47cqHUtRzrfpcajIGHIbCvss" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -57,7 +55,7 @@
   </component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
-      <module name="migraciones" />
+      <module name="migracion_estaciones" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>

@@ -37,6 +37,9 @@ def procesar_elemento(elemento):
 
     obj_postgres.construir_data(data,dic_data_preciptacion,valor)
 
+"""
+funcion para procesar las estaciones en procesos paralelos
+"""
 def lanzar_paralelismo():
     dic_estaciones_con_id = obtener_estaciones_ids()
     ####################TEMP
@@ -51,7 +54,9 @@ def lanzar_paralelismo():
     pool.join()
 
 
-# Press the green button in the gutter to run the script.
+"""
+Main
+"""
 if __name__ == '__main__':
     utils.borrar_carpeta(constants.NOMBRE_CARPETA)
     utils.crear_carpeta(constants.NOMBRE_CARPETA)

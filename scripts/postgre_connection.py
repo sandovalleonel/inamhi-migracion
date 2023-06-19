@@ -1,7 +1,8 @@
 import psycopg2
-
+import pandas as pd
 from scripts.procesar_data_temperatura import ingresar_tabla_temperatura
 from scripts.procesar_data_precipitacion import ingresar_tabla_precipitacion
+from scripts import constants
 class PostgresConsultas:
     def __init__(self):
         self.pg_conn = None
@@ -88,12 +89,15 @@ class PostgresConsultas:
     """
 
     def construir_data(self, data_list, dic_data_precip, id_estacion):
+
+        df = pd.DataFrame(data_list)
+        df.columns = constants.COLUMNS_CLM0002
         self._abrir_conexion()
 
         ##liempieza y guardar lote temperatura
         ##guardar temperatura
-        sql_temperatura,data_temperatura = ingresar_tabla_temperatura(data_list,id_estacion)
-        self.pg_cursor.executemany(sql_temperatura,data_temperatura)
+        ingresar_tabla_temperatura(df,id_estacion)
+        #self.pg_cursor.executemany(sql_temperatura,data_temperatura)
         self.pg_conn.commit()
 
         ##limpieza y guardar lote precipitacion
