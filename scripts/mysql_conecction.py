@@ -41,7 +41,7 @@ class MysqlConsultas:
     """
     def obtener_datos_por_estacion(self, estacion):
         self.abrir_conexion()
-        sql = f"SELECT * FROM clm0002  where codigo = '{estacion}'  ORDER BY codigo,anio,mes,dia ASC"
+        sql = f"SELECT * FROM clm0002  where codigo = '{estacion}'  ORDER BY anio ASC,mes ASC,dia ASC"
         self.mysql_cursor.execute(sql)
         data = self.mysql_cursor.fetchall()
         self.cerrar_conexion()
@@ -53,7 +53,7 @@ class MysqlConsultas:
     def obtener_datos_presipitacion_por_estacion(self, estacion):
 
         self.abrir_conexion()
-        sql = f"SELECT * FROM plv0002  where codigo = '{estacion}'  ORDER BY codigo,anio,mes,dia ASC"
+        sql = f"SELECT * FROM plv0002  where codigo = '{estacion}'  ORDER BY anio ASC,mes ASC,dia ASC"
         self.mysql_cursor.execute(sql)
         data = self.mysql_cursor.fetchall()
         self.cerrar_conexion()

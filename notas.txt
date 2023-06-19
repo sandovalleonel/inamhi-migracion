@@ -1,0 +1,105 @@
+TEMPERATURA
+obtener totales a guardar por TS y TH
+valores fuera de rango 99.99,9999.999...etc remplazar con null
+valores 888.88 remplazar -888.88
+si toda la fila a guardar estan null, no guardar
+
+
+
+######script mysql
+
+--TABLA PRINCIPAL A MIGRAR**;
+select * from mch.clm0002 c;
+select count(*) from mch.clm0002 c;
+
+--TABLA HACER join PRECIPITACION;
+select * from mch.plv0002 p ;
+select count(*) from mch.plv0002 p ;
+
+--consultas;
+select 'total registros ',count(*)  from mch.clm0002 c
+union
+select 'total registros sin dia 32',count(*)  from mch.clm0002 c where c.dia  != 32
+union
+select 'total registros  dia 32',count(*)  from mch.clm0002 c where c.dia  = 32;
+
+--ver si existen datos nulos;
+--1978-09-22 07:00:00.000
+select * from mch.clm0002 c
+where
+tmax IS NULL OR
+tmin IS NULL OR
+ts07 IS NULL OR
+ts13 IS NULL OR
+ts19 IS NULL OR
+th07 IS NULL OR
+th13 IS NULL OR
+th19 IS NULL OR
+rr07  IS NULL OR
+rr13  IS NULL OR
+rr19  IS NULL OR
+ev07   IS NULL OR
+ev071 IS NULL OR
+ev13   IS NULL OR
+ev131 IS NULL OR
+ev19   IS NULL OR
+ev191 IS NULL OR
+nu07 IS NULL OR
+nu13 IS NULL OR
+nu19 IS NULL OR
+dv07 IS NULL OR
+vv07 IS NULL OR
+dv13 IS NULL OR
+vv13 IS NULL OR
+dv19 IS NULL OR
+vv19 IS NULL OR
+an07 IS NULL OR
+an13 IS NULL OR
+an19 IS NULL OR
+tipev IS NULL OR
+tipcal IS NULL OR
+fuente IS NULL OR
+tipane IS NULL ;
+
+--datos comunes
+select * from mch.clm0002 c;
+select count(*) from mch.plv0002 where codigo = 'M0001'
+select count(*) from mch.clm0002 where codigo = 'M0001'
+select * from mch.plv0002 order by codigo,anio,mes,dia asc
+
+select * from mch.plv0002 where codigo = 'M0001' order by anio asc,mes asc,dia asc
+1964	1994
+
+
+select min(anio) ,max(anio) from mch.plv0002 where codigo = 'M0001'
+union
+select min(anio) ,max(anio) from mch.clm0002 where codigo = 'M0001'
+
+select * from mch.clm0002 order by codigo,anio,mes,dia asc
+
+
+##Escript postgres
+
+--vista de ids de estacion
+select * from administrativo.vta_estaciones ve where codigo ='M0103';
+
+--tabla destino de temperatura
+delete from convencionales2._293161h;
+select count(*) from convencionales2._293161h;--1367931 --1317057
+select * from convencionales2._293161h where id_estacion = 63753 order by fecha_toma asc ;
+select id_estacion  from convencionales2._293161h group by id_estacion
+--maximo tempertaura
+SELECT 'MAX' AS tipo, MAX(t.term_seco) AS term_seco, MAX(t.term_hmd) AS term_humedad
+FROM convencionales2._293161h t
+UNION
+SELECT 'MIN', MIN(t.term_seco), MIN(t.term_hmd)
+FROM convencionales2._293161h t;
+
+
+--precipitacion
+select * from convencionales2._171481h  ;
+select 'MAX' AS tipo, MAX(valor)
+from convencionales2._171481h
+union
+select 'MIN' AS tipo, min(valor)
+from convencionales2._171481h
