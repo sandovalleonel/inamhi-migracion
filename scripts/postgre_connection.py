@@ -3,6 +3,8 @@ import pandas as pd
 from scripts.procesar_data_temperatura import ingresar_tabla_temperatura
 from scripts.procesar_data_precipitacion import ingresar_tabla_precipitacion
 from scripts import constants
+
+
 class PostgresConsultas:
     def __init__(self):
         self.pg_conn = None
@@ -54,6 +56,7 @@ class PostgresConsultas:
     """
     obtener id_estacion del codigo_estacion
     """
+
     def buscar_id_estacion(self, lista_codigo_estaciones):
         diccionario_total_estacion_manual = self._find_id_estacion()
         data = {}
@@ -66,6 +69,7 @@ class PostgresConsultas:
                 estacion_sin_id.append(cod_estacion)
                 continue
         return data, estacion_sin_id
+
     def buscar_direccion_viento(self):
         self._abrir_conexion()
         schema = "administrativo"
@@ -88,22 +92,38 @@ class PostgresConsultas:
     preparar datos para guardar en postgres por estacion
     """
 
-    def construir_data(self, data_list, dic_data_precip, id_estacion):
+    def construir_data(self, data_list, data_precipitacion, id_estacion):
+        id_usuario = constants.ID_ADMIN
+        fecha_actual = pd.Timestamp.now()
+        is_data_precipitacion_empty = False
 
         df = pd.DataFrame(data_list)
         df.columns = constants.COLUMNS_CLM0002
+        df["id_estacion"] = id_estacion
+        df["id_usuario"] = id_usuario
+        df["fecha_ingreso"] = fecha_actual
+
+        if data_precipitacion:  # Verifica si `data_precipitacion` tiene elementos
+            df_precipitacion = pd.DataFrame(data_precipitacion)
+            df_precipitacion.columns = constants.COLUMNS_PVL0002
+            df_precipitacion["id_estacion"] = id_estacion
+            df_precipitacion["id_usuario"] = id_usuario
+            df_precipitacion["fecha_ingreso"] = fecha_actual
+        else:
+            df_precipitacion = pd.DataFrame()
+            is_data_precipitacion_empty = True
+
         self._abrir_conexion()
 
         ##liempieza y guardar lote temperatura
         ##guardar temperatura
-        ingresar_tabla_temperatura(df,id_estacion)
+        #sql_temperatura,data_temperatura = ingresar_tabla_temperatura(df)
         #self.pg_cursor.executemany(sql_temperatura,data_temperatura)
-        self.pg_conn.commit()
+        #self.pg_conn.commit()
 
         ##limpieza y guardar lote precipitacion
-        #guardar precipitacion
-        ingresar_tabla_precipitacion(data_list,id_estacion,dic_data_precip)
-
-
+        # guardar precipitacion
+        sql_precipitacion,data_precipitacion = ingresar_tabla_precipitacion(df,  df_precipitacion, is_data_precipitacion_empty)
+        self.pg_cursor.executemany(sql_precipitacion, data_precipitacion)
+        self.pg_conn.commit()
         self._cerrar_conexion()
-

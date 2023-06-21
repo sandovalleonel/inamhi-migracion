@@ -6,6 +6,12 @@ import shutil
 
 
 
+def write_tuplas_csv(tuplas, nombre_archivo):
+    with open(nombre_archivo, 'a', newline='') as archivo_csv:
+        escritor_csv = csv.writer(archivo_csv)
+        escritor_csv.writerows(tuplas)
+
+
 def cargar_archivo_csv(nombre_archivo):
     matriz_datos = []
     with open(nombre_archivo, 'r') as archivo_csv:

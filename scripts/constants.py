@@ -10,3 +10,9 @@ COLUMNS_CLM0002 = ["codigo", "anio", "mes", "dia", "tmax", "tmin", "ts07", "ts13
                    "rr07", "rr13", "rr19", "ev07", "ev071", "ev13", "ev131", "ev19", "ev191", "nu07", "nu13", "nu19",
                    "dv07", "vv07", "dv13", "vv13", "dv19", "vv19", "an07", "an13", "an19", "tipev", "tipcal", "fuente",
                    "tipane"]
+
+COLUMNS_PVL0002 = ["codigo", "anio", "mes", "dia", "tipolec", "rr07", "rr13", "rr19", "fuente"]
+
+##temperatura
+TEMP_MAXIMA = 40
+TEMP_MINIMO = -1

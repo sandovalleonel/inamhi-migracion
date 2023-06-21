@@ -60,5 +60,5 @@ Main
 if __name__ == '__main__':
     utils.borrar_carpeta(constants.NOMBRE_CARPETA)
     utils.crear_carpeta(constants.NOMBRE_CARPETA)
-    utils.crear_carpeta(f"{constants.NOMBRE_CARPETA}/dia32")
+    utils.crear_carpeta(constants.NOMBRE_CARPETA+"/total")
     lanzar_paralelismo()

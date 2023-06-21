@@ -57,11 +57,7 @@ class MysqlConsultas:
         self.mysql_cursor.execute(sql)
         data = self.mysql_cursor.fetchall()
         self.cerrar_conexion()
-        dic_data = {}
 
-        for item in data:
-            condPk = item[0]+'-'+str(item[1])+'-'+str(item[2])+'-'+str(item[3])
-            dic_data[condPk] = item
-        return dic_data
+        return data
 
 

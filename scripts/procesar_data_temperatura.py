@@ -2,6 +2,8 @@ from scripts import constants
 from scripts import utils
 from datetime import datetime
 import pandas as pd
+import numpy as np
+import os
 
 """
 ingresar datos en la tabla termperatura de las 7,13,19 (h)
@@ -11,108 +13,83 @@ ingresar datos en la tabla termperatura de las 7,13,19 (h)
 """
 
 
-def ingresar_tabla_temperatura(df_datos, id_estacion):
-    id_usuario = constants.ID_ADMIN
-    fecha_Actual = str(datetime.now())
+def ingresar_tabla_temperatura(df_datos):
+
     sql = f"INSERT INTO convencionales2._293161h " \
           f"(id_estacion, id_usuario, fecha_toma, fecha_ingreso,term_seco,term_hmd) " \
           f"values (%s,%s,%s,%s,%s,%s)"
 
-    temp_df_07 = df_datos[["codigo", "anio", "mes", "dia", "ts07", "th07"]]
-    temp_df_13 = df_datos[["codigo", "anio", "mes", "dia", "ts13", "th13"]]
-    temp_df_19 = df_datos[["codigo", "anio", "mes", "dia", "ts19", "th19"]]
+    # obtener los dataframes de las tres horas
+    df_07 = df_datos[["id_estacion", "id_usuario", "fecha_ingreso", "codigo", "anio", "mes", "dia", "ts07", "th07"]]
+    df_07 = df_07.rename(columns={"ts07": "ts", "th07": "th"})
+    df_07["hora"] = "07"
+    df_13 = df_datos[["id_estacion", "id_usuario", "fecha_ingreso", "codigo", "anio", "mes", "dia", "ts13", "th13"]]
+    df_13 = df_13.rename(columns={"ts13": "ts", "th13": "th"})
+    df_13["hora"] = "13"
+    df_19 = df_datos[["id_estacion", "id_usuario", "fecha_ingreso", "codigo", "anio", "mes", "dia", "ts19", "th19"]]
+    df_19 = df_19.rename(columns={"ts19": "ts", "th19": "th"})
+    df_19["hora"] = "19"
+    dataframes = [df_07, df_13, df_19]
+    df_total = pd.concat(dataframes)
 
-    nuevo_df = temp_df_07[temp_df_07['dia'] != 32].copy()
-    nuevo_df.reset_index(drop=True, inplace=True)
-    print(temp_df_07.head(34))
-    print(nuevo_df.head(34))
+    ##Temepratura 07
+    columnas_salida = ["id_estacion", "id_usuario", "fecha_toma", "fecha_ingreso", "ts", "th"]
+
+    df_total = df_total.drop(df_total[df_total['dia'] == 32].index)
+    df_total.reset_index(drop=True, inplace=True)  # reiniciar index
+    df_total["fecha_toma"] = df_total["anio"].astype(str) \
+                             + "-" + df_total["mes"].astype(str).str.zfill(2) \
+                             + "-" + df_total["dia"].astype(str).str.zfill(2) \
+                             + " " + df_total["hora"].astype(str).str.zfill(2) + ":00:00"
+    df_total['fecha_toma'] = pd.to_datetime(df_total['fecha_toma'])
+    df_total = df_total.sort_values('fecha_toma')
+    df_total.reset_index(drop=True, inplace=True)
+
+    df_total['ts'], df_total['th'] = df_total['ts'].astype(float), df_total['th'].astype(float) #oas to float
+    df_total.loc[df_total['ts'].isin(constants.VALES_OUT_RANGE_TEMPERATURE), 'ts'] = None  # null valores 99.9, 99...
+    df_total.loc[df_total['th'].isin(constants.VALES_OUT_RANGE_TEMPERATURE), 'th'] = None  # null valores 99.9, 99...
+    df_total.loc[df_total['ts'].isin(constants.VALUE_TO_FLAG), 'ts'] = constants.NEW_VALUE_TO_FLAG  # 888.88 a -888.88
+    df_total.loc[df_total['th'].isin(constants.VALUE_TO_FLAG), 'th'] = constants.NEW_VALUE_TO_FLAG  # 888.88 a -888.88
+
+    tupla = [tuple(row) for row in df_total[columnas_salida].values]
+
+    #reoprtes
+    #total por variables
+    totales = []
+    total_ts = f"{df_datos['codigo'].loc[1]},ts,{df_total['ts'].count()}"
+    total_th = f"{df_datos['codigo'].loc[1]},th,{df_total['th'].count()}"
+    totales.append(total_ts)
+    totales.append(total_th)
+    utils.csv_write_array_string(totales,constants.NOMBRE_CARPETA+"/total/tota.csv")
+    #temperatura masyor a 40
+    tem_mas_40_ts = df_total.loc[(df_total['ts'] > constants.TEMP_MAXIMA)]
+    tem_mas_40_ts = tem_mas_40_ts[['codigo','fecha_toma','ts']]
+    tem_mas_40_ts = tem_mas_40_ts.rename(columns={"ts": "valor"})
+    tem_mas_40_ts["variable"] = "ts"
+    tem_mas_40_th = df_total.loc[(df_total['th'] > constants.TEMP_MAXIMA)]
+    tem_mas_40_th = tem_mas_40_th[['codigo', 'fecha_toma', 'th']]
+    tem_mas_40_th = tem_mas_40_th.rename(columns={"th": "valor"})
+    tem_mas_40_th["variable"] = "th"
+
+    temp_mas40 = pd.concat([tem_mas_40_th,tem_mas_40_ts])
+    array_tuplas = np.array(temp_mas40.to_records(index=False).tolist())
+    utils.write_tuplas_csv(array_tuplas,"resultados/total/temp_mas40.csv")
+
+    #temperatura menor a 5
+    tem_min_5_ts = df_total.loc[(df_total['ts'] < constants.TEMP_MINIMO) & (df_total['ts'] != constants.NEW_VALUE_TO_FLAG)]
+    tem_min_5_ts = tem_min_5_ts[['codigo','fecha_toma','ts']]
+    tem_min_5_ts = tem_min_5_ts.rename(columns={"ts": "valor"})
+    tem_min_5_ts["variable"] = "ts"
+    tem_min_5_th = df_total.loc[(df_total['th'] < constants.TEMP_MINIMO) & (df_total['th'] != constants.NEW_VALUE_TO_FLAG)]
+    tem_min_5_th = tem_min_5_th[['codigo', 'fecha_toma', 'th']]
+    tem_min_5_th = tem_min_5_th.rename(columns={"th": "valor"})
+    tem_min_5_th["variable"] = "th"
+
+    temp_min5 = pd.concat([tem_min_5_th,tem_min_5_ts])
+    array_tuplas = np.array(temp_min5.to_records(index=False).tolist())
+    utils.write_tuplas_csv(array_tuplas,"resultados/total/temp_min5.csv")
 
     """
-    tupla_07 = []
-    tupla_13 = []
-    tupla_19 = []
-
-    filas_dia_32 = []
-    for item in tupla_datos:
-
-        if item[3] > 31:
-            ##validar si el dia 32 de precipitacion es
-            filas_dia_32.append(item)
-            continue
-        fecha_registro_07 = utils.fecha_Registro(item[1], item[2], item[3], "07")
-        fecha_registro_13 = utils.fecha_Registro(item[1], item[2], item[3], "13")
-        fecha_registro_19 = utils.fecha_Registro(item[1], item[2], item[3], "19")
-
-        tupla_07.append((id_estacion, id_usuario, fecha_registro_07, fecha_Actual, item[6], item[9]))
-        tupla_13.append((id_estacion, id_usuario, fecha_registro_13, fecha_Actual, item[7], item[10]))
-        tupla_19.append((id_estacion, id_usuario, fecha_registro_19, fecha_Actual, item[8], item[11]))
-    utils.csv_write_estcion_dia_32(filas_dia_32,f"{constants.NOMBRE_CARPETA}/dia32/{id_estacion}_dia_32.csv")
-
-    #print('\n'.join(map(str, tupla_total[:10])))
-    tupla_final = []
-    limpiar_registros_a_guardar(tupla_07)
-    #tupla_final.extend(limpiar_registros_a_guardar(tupla_13))
-    #tupla_final.extend(limpiar_registros_a_guardar(tupla_19))
-    return sql,tupla_final
     """
 
-
-"""
-limpiar datos temperatura
-"""
-
-
-def limpiar_registros_a_guardar(data):
-    df = pd.DataFrame(data)
-    df.columns = ["id_estacion", "id_ususario", "fecha_registro", "fecha_actual", "ts", "th"]
-
-    print(df.head(10))
-
-    total_datos_ts = 0
-    total_datos_th = 0
-    anio = 0
-
-    nueva_lista = []
-    string_reporte = []
-    index = 0
-    for fila in data:
-        nuevo_valor_ts = float(fila[4])
-        nuevo_valor_th = float(fila[5])
-
-        # fuera de rango
-        if nuevo_valor_ts in constants.VALES_OUT_RANGE_TEMPERATURE:
-            nuevo_valor_ts = constants.NEW_VALUE_OUT_RANGE_TEMPERATURE
-
-        if nuevo_valor_th in constants.VALES_OUT_RANGE_TEMPERATURE:
-            nuevo_valor_th = constants.NEW_VALUE_OUT_RANGE_TEMPERATURE
-
-        # banderas
-        if nuevo_valor_ts in constants.VALUE_TO_FLAG:
-            nuevo_valor_ts = constants.NEW_VALUE_TO_FLAG
-
-        if nuevo_valor_th in constants.VALUE_TO_FLAG:
-            nuevo_valor_th = constants.NEW_VALUE_TO_FLAG
-
-        # valores no nulso a guardar
-        if nuevo_valor_ts is not None:
-            total_datos_ts = total_datos_ts + 1
-
-        if nuevo_valor_th is not None:
-            total_datos_th = total_datos_th + 1
-
-        tupla_actualizada = (fila[0], fila[1], fila[2], fila[3], nuevo_valor_ts, nuevo_valor_th)
-        nueva_lista.append(tupla_actualizada)
-
-        if anio != fila[2].year and anio != 0:
-            # campo,id_estacion,año,datos,
-            string_reporte.append(f"TS, {fila[0]},{anio},{data[index - 1][2]} , {total_datos_ts}")
-            string_reporte.append(f"TH, {fila[0]},{anio},{data[index - 1][2]} , {total_datos_th}")
-            total_datos_ts = 0
-            total_datos_th = 0
-
-        anio = fila[2].year
-        index = index + 1
-
-    string_reporte.append("*" * 23)
-    utils.csv_write_array_string(string_reporte, f"{constants.NOMBRE_CARPETA}/reporte.csv")
-    return nueva_lista
+    return sql, tupla

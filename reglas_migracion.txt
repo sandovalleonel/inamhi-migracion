@@ -1,0 +1,30 @@
+Reportes generales
+-numero de estaciones migradas
+-numeor de estaciones no migradas
+-saber el total de valores migrados por variable y por estacion
+-numero de saltos datos no guardados en saltos mayores a dos dias
+-Número   de   datos   que   esta   +-   2   desviación   estándar   y   la   fecha   y   la fecha dónde están esos datos
+
+CREACION FECHA DE REGISTRO
+-tomar la columan anio,mes,dia
+-la hora se toma de cada columna en las variables a guardar
+
+REGLAS Y REPORTES PARA MIGRAR VARIABLES TEMPERATURA (ts07,ts13,ts19,th07,th13,th13)
+    reglas
+        -si existen valores 9.9,99.9... etc remplazar con nulos
+        -las columnas con valores nulos si deben se guardadas
+        -los registros con valores 888.88 remplezar por -888.88
+    reporte
+        -cuantos valores superan mas de 40
+        -valores menores a -5
+
+REGLAS Y REPORTES PARA MIGRAR VARIABLES PRECIPITACION (rr07,rr13,rr19)
+    reglas
+    -si existen valores 9.9,99.9... etc remplazar con nulos
+    -las columnas con valores nulos si deben se guardadas
+    -los registros con valores 888.88 remplezar por -888.88
+    -obtener datos de una tabla secundaria mch.plv0002
+    -si los datos estan en una tabla y en la otra no, guardar ese datos como correcto
+    -si en la dos tabla en la misma fecha existe un dato diferente en las tablas es error
+    -si en la dos tabla en la misma fecha existe un dato igual ese dato es correcto
+
