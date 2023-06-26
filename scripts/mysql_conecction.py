@@ -1,11 +1,18 @@
 import mysql.connector
 
-
+"""
+versión: 1.00, fecha : 20/06/2023
+Class Mysql crear una coneccion obtener ddatos de la base
+Copyright. INAMHI <www.inamhi.gob.ec>. Todos los derechos reservados.
+"""
 class MysqlConsultas:
     def __init__(self):
         self.mysql_conn = None
         self.mysql_cursor = None
 
+    """
+    abrir la coneccion a mysql
+    """
     def abrir_conexion(self):
         self.mysql_conn = mysql.connector.connect(
             host="localhost",
@@ -15,6 +22,9 @@ class MysqlConsultas:
         )
         self.mysql_cursor = self.mysql_conn.cursor()
 
+    """
+    Cerrar coneccion de mysql
+    """
     def cerrar_conexion(self):
         if self.mysql_cursor:
             self.mysql_cursor.close()
@@ -24,7 +34,9 @@ class MysqlConsultas:
 
 
     """
-    funcion obtener el listado de todas la estaciones registradas en clm0002
+    obtner todos los codigo de estaciones a migrar
+    Return:
+        data: array de tuplas de la consulta
     """
 
     def obtener_lista_estaciones(self):
@@ -37,7 +49,11 @@ class MysqlConsultas:
 
 
     """ 
-    obtener una lista de registros por estacion
+    obtener todos los datos a mygrar de una estacion especifica
+    Args:
+        estacion:String con el codigo de estacion
+    Return:
+        data: array de tuplas de la consulta
     """
     def obtener_datos_por_estacion(self, estacion):
         self.abrir_conexion()
@@ -48,7 +64,11 @@ class MysqlConsultas:
         return data
 
     """ 
-    obtener una lista de registros precipitacion por estacion en tabla 2
+    obtner datos de precicpitacion de la tabla secundaria
+    Args:
+        estacion:String con el codigo de estacion
+    Return:
+        data: array de tuplas de la consulta
     """
     def obtener_datos_presipitacion_por_estacion(self, estacion):
 

@@ -5,13 +5,17 @@ from datetime import datetime
 import shutil
 
 
-
+"""
+escribir un archivo csv apartir de un array de tuplas
+"""
 def write_tuplas_csv(tuplas, nombre_archivo):
     with open(nombre_archivo, 'a', newline='') as archivo_csv:
         escritor_csv = csv.writer(archivo_csv)
         escritor_csv.writerows(tuplas)
 
-
+"""
+leer archivo csv
+"""
 def cargar_archivo_csv(nombre_archivo):
     matriz_datos = []
     with open(nombre_archivo, 'r') as archivo_csv:
@@ -34,13 +38,11 @@ def escribir_csv(datos, nombre_archivo):
             escritor.writerow(fila_actualizada)
 
 
-def csv_write_estcion_dia_32(datos, nombre_archivo):
-    with open(nombre_archivo, 'a', newline='') as archivo_csv:
-        escritor = csv.writer(archivo_csv)
-        for elemento in datos:
-            escritor.writerow([elemento])
 
 
+"""
+escribir un csv apartir de un array de strings
+"""
 def csv_write_array_string(array_strings, nombre_archivo):
     with open(nombre_archivo, 'a', newline='') as archivo_csv:
         writer = csv.writer(archivo_csv)
@@ -48,6 +50,9 @@ def csv_write_array_string(array_strings, nombre_archivo):
             writer.writerow([string])
 
 
+"""
+crear carpeta
+"""
 def crear_carpeta(nombre_carpeta, ruta_carpeta=None):
     if ruta_carpeta:
         ruta_completa = os.path.join(ruta_carpeta, nombre_carpeta)
@@ -68,13 +73,4 @@ def borrar_carpeta(ruta_carpeta):
     if os.path.exists(ruta_carpeta):
         shutil.rmtree(ruta_carpeta)
 
-"""
-construir fecha de registro
-"""
-def fecha_Registro(anio, mes, dia, hora):
-    string_data = "{}-{}-{} {}:00:00".format(str(anio),
-                                             str(mes).zfill(2),
-                                             str(dia).zfill(2),
-                                             str(hora).zfill(2))
 
-    return datetime.strptime(string_data, "%Y-%m-%d %H:%M:%S")
