@@ -1,7 +1,7 @@
 from scripts import constants
 from scripts import utils
 import pandas as pd
-
+from scripts import reporte_comun
 
 def ingresar_tabla_nubosidad(df_datos):
     sql = f""
@@ -19,7 +19,7 @@ def ingresar_tabla_nubosidad(df_datos):
     tupla_13 = _limpiar_diccionario_nubosidad(df_13, "13", codigo_estacion)
     tupla_19 = _limpiar_diccionario_nubosidad(df_19, "19", codigo_estacion)
 
-    return sql, tupla_total
+    return (sql, tupla_total) if constants.SAVE_DATA else (sql, [])
 
 
 def _limpiar_diccionario_nubosidad(df_nubosidad, hora, codigo):
@@ -38,7 +38,8 @@ def _limpiar_diccionario_nubosidad(df_nubosidad, hora, codigo):
     df_nubosidad.loc[df_nubosidad['nu'].isin(constants.VALUE_TO_FLAG), 'nu'] = constants.NEW_VALUE_TO_FLAG
 
     # generar reportes
-    _reportes_nubosidad(df_nubosidad, codigo, hora)
+    if constants.GENERAR_REPORTES:
+        _reportes_nubosidad(df_nubosidad, codigo, hora)
 
     # exportar datos a arrays para guardaer en la  base
     return df_nubosidad.to_records(index=False).tolist()
@@ -46,19 +47,11 @@ def _limpiar_diccionario_nubosidad(df_nubosidad, hora, codigo):
 
 def _reportes_nubosidad(df_total, codigo, hora):
     # reportes
-    # total por variables
-    totales = []
-    total_ts = (codigo, f"nu{hora}", df_total['nu'].count(), df_total.shape[0])
-    totales.append(total_ts)
-    utils.write_tuplas_csv(totales, constants.NOMBRE_CARPETA + "/total_por_variable.csv")
+    ################## total datos guardados por variable ##################
+    reporte_comun.total_por_variable(codigo, hora, "nu", df_total)
 
-    #mas de dos nulos seguidos
-    tupla_nulos_fecha = []
-    null_count = df_total['nu'].isnull().astype(int)
-    consecutive_nulls = (null_count.groupby((null_count != null_count.shift()).cumsum()).transform('sum') >= 2)
-    result = df_total[consecutive_nulls]
-    result['variable'] = "nu"+str(hora)
-    tupla_nulos_fecha.extend(result.to_records(index=False).tolist())
-    utils.write_tuplas_csv(tupla_nulos_fecha, constants.NOMBRE_CARPETA + "/nubosidad_fecha_no_registradas.csv")
 
+    ################## fecha sin registrar datos ##################
+    nombre_archivo = 'dato_no_tegistrado_nubosidad(fechas)'
+    reporte_comun.fechas_no_registrada_por_variable(codigo, hora, 'nu', df_total, nombre_archivo)
 

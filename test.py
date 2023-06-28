@@ -13,28 +13,15 @@ result = df[consecutive_nulls]
 print(result)
 """
 import pandas as pd
+import numpy as np
 
-data = {
-    'codigo': ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'],
-    'valor1': [None, None, 2, 1, None, 1, None, 1, None]
-}
+# Crear un DataFrame de ejemplo
+data = {'a': [1, np.nan, 3, 4],
+        'b': [np.nan, 2, 2, 4]}
+df_123 = pd.DataFrame(data)
 
-df = pd.DataFrame(data)
+# Aplicar la lógica y crear la columna 'c'
+df_123['c'] = df_123.apply(lambda row: True if pd.notnull(row['a']) and pd.notnull(row['b']) and row['a'] != row['b'] else False, axis=1)
 
-# Recorrer el DataFrame utilizando iterrows()
-cod_subgrupo = 0
-tupla_temp = []
-for index, row in df.iterrows():
-    codigo = row['codigo']
-    valor1 = row['valor1']
-
-    if pd.isna(valor1):
-        tupla_temp.append((codigo, cod_subgrupo))
-    else:
-        if len(tupla_temp) > 1:
-            print(tupla_temp[0][0], len(tupla_temp))
-        cod_subgrupo = cod_subgrupo + 1
-        tupla_temp = []
-
-if len(tupla_temp) > 1:
-    print(tupla_temp[0][0], len(tupla_temp))
+# Imprimir el DataFrame resultante
+print(df_123)

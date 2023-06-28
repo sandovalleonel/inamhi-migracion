@@ -24,8 +24,9 @@ def obtener_estaciones_ids():
     obj_postgres = PostgresConsultas()
     listado_codigos_estacion = obj_mysql.obtener_lista_estaciones()
     dicc_estaciones = obj_postgres.buscar_id_estacion(listado_codigos_estacion)
-    utils.csv_write_array_string(dicc_estaciones[1], f"{constants.NOMBRE_CARPETA}/estaciones_sin_id.csv")
-    utils.csv_write_array_string(dicc_estaciones[0], f"{constants.NOMBRE_CARPETA}/estaciones_con_id.csv")
+    if constants.GENERAR_REPORTES:
+        utils.csv_write_array_string(dicc_estaciones[1], f"{constants.NOMBRE_CARPETA}/estaciones_sin_id.csv")
+        utils.csv_write_array_string(dicc_estaciones[0], f"{constants.NOMBRE_CARPETA}/estaciones_con_id.csv")
     return dicc_estaciones[0]
 
 """

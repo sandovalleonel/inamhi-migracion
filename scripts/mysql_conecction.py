@@ -5,6 +5,8 @@ versión: 1.00, fecha : 20/06/2023
 Class Mysql crear una coneccion obtener ddatos de la base
 Copyright. INAMHI <www.inamhi.gob.ec>. Todos los derechos reservados.
 """
+
+
 class MysqlConsultas:
     def __init__(self):
         self.mysql_conn = None
@@ -13,6 +15,7 @@ class MysqlConsultas:
     """
     abrir la coneccion a mysql
     """
+
     def abrir_conexion(self):
         self.mysql_conn = mysql.connector.connect(
             host="localhost",
@@ -25,13 +28,12 @@ class MysqlConsultas:
     """
     Cerrar coneccion de mysql
     """
+
     def cerrar_conexion(self):
         if self.mysql_cursor:
             self.mysql_cursor.close()
         if self.mysql_conn:
             self.mysql_conn.close()
-
-
 
     """
     obtner todos los codigo de estaciones a migrar
@@ -47,7 +49,6 @@ class MysqlConsultas:
         self.cerrar_conexion()
         return data
 
-
     """ 
     obtener todos los datos a mygrar de una estacion especifica
     Args:
@@ -55,6 +56,7 @@ class MysqlConsultas:
     Return:
         data: array de tuplas de la consulta
     """
+
     def obtener_datos_por_estacion(self, estacion):
         self.abrir_conexion()
         sql = f"SELECT * FROM clm0002  where codigo = '{estacion}'  ORDER BY anio ASC,mes ASC,dia ASC"
@@ -70,6 +72,7 @@ class MysqlConsultas:
     Return:
         data: array de tuplas de la consulta
     """
+
     def obtener_datos_presipitacion_por_estacion(self, estacion):
 
         self.abrir_conexion()
@@ -79,5 +82,3 @@ class MysqlConsultas:
         self.cerrar_conexion()
 
         return data
-
-
