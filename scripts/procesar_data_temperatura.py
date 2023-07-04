@@ -16,6 +16,9 @@ recibe por estacion se separa las variables de tempertarua para cada hora regist
 y  se llama a un metodo para realizar la limepza por variable
 Args:
     df_datos: dataframe
+Return:
+    sql:sentcnia sql para incertar datos
+    tupla_total:datos a guardar
 """
 
 

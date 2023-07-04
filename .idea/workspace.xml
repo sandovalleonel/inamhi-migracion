@@ -5,32 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5cb6072d-6ce8-4433-a21b-8e8717a7bd3d" name="Changes" comment="first comit">
-      <change afterPath="$PROJECT_DIR$/informacion_cabeceras_reporte.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/script.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/procesar_data_tmaxtmin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/archivo.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notas.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/reglas_migracion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/reglas_migracion.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resultados/dato_no_tegistrado_evaporacion(fechas).csv" beforeDir="false" afterPath="$PROJECT_DIR$/resultados/dato_no_tegistrado_evaporacion(fechas).csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resultados/dato_no_tegistrado_nubosidad(fechas).csv" beforeDir="false" afterPath="$PROJECT_DIR$/resultados/dato_no_tegistrado_nubosidad(fechas).csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resultados/dato_no_tegistrado_precipitacion(fechas).csv" beforeDir="false" afterPath="$PROJECT_DIR$/resultados/dato_no_tegistrado_precipitacion(fechas).csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resultados/dato_no_tegistrado_temeperatura(fechas).csv" beforeDir="false" afterPath="$PROJECT_DIR$/resultados/dato_no_tegistrado_temeperatura(fechas).csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resultados/dato_no_tegistrado_viento(fechas).csv" beforeDir="false" afterPath="$PROJECT_DIR$/resultados/dato_no_tegistrado_viento(fechas).csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resultados/datos_diferentes_precipitacion.csv" beforeDir="false" afterPath="$PROJECT_DIR$/resultados/datos_diferentes_precipitacion.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resultados/negativos_test.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resultados/total_por_variable.csv" beforeDir="false" afterPath="$PROJECT_DIR$/resultados/total_por_variable.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/postgre_connection.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/postgre_connection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/procesar_data_evaporacion.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/procesar_data_evaporacion.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/procesar_data_nubosidad.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/procesar_data_nubosidad.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/procesar_data_precipitacion.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/procesar_data_precipitacion.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/procesar_data_temperatura.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/procesar_data_temperatura.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/procesar_data_viento.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/procesar_data_viento.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/reporte_comun.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/reporte_comun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +23,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
