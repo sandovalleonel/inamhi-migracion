@@ -46,6 +46,7 @@ def obtener_datos_estaciones(dic_estaciones):
         data_preciptacion = obj_mysql.obtener_datos_presipitacion_por_estacion(clave)
         obj_postgres.construir_data(data,data_preciptacion,valor,dic_id_viento)
 
+
 """
 def procesar_elemento(elemento):
     clave,valor = elemento

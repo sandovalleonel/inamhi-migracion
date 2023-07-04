@@ -5,6 +5,7 @@ from scripts.procesar_data_precipitacion import ingresar_tabla_precipitacion
 from scripts.procesar_data_evaporacion import ingresar_tabla_evaporacion
 from scripts.procesar_data_viento import ingresar_tabla_viento
 from scripts.procesar_data_nubosidad import ingresar_tabla_nubosidad
+from scripts.procesar_data_tmaxtmin import ingresar_tabla_tmaxtmin
 from scripts import constants
 from datetime import datetime
 """
@@ -149,6 +150,8 @@ class PostgresConsultas:
         df["fecha_ingreso"] = fecha_actual
         df["fecha_ingreso"] = df["fecha_ingreso"].dt.strftime('%Y-%m-%d %H:%M:%S')
 
+        df_dias32 = df.loc[(df['dia'] == 32)]
+
         df = df.drop(df[df['dia'] == 32].index)
 
         # crear columna fecha toma con con 00h la hora se setea en cada metodo
@@ -185,7 +188,7 @@ class PostgresConsultas:
 
         ##limpieza y guardar lote precipitacion
         # guardar precipitacion
-        sql_precipitacion, data_precipitacion = ingresar_tabla_precipitacion(df, df_precipitacion,                                                                             is_data_precipitacion_empty)
+        sql_precipitacion, data_precipitacion = ingresar_tabla_precipitacion(df, df_precipitacion,is_data_precipitacion_empty,df_dias32)
         self.pg_cursor.executemany(sql_precipitacion, data_precipitacion)
         self.pg_conn.commit()
 
@@ -207,7 +210,13 @@ class PostgresConsultas:
         # limpieza y guardar lote nubosidad
         # guardar nubosidad
         sql_nubosidad, data_nubosidad = ingresar_tabla_nubosidad(df)
-        # self.pg_cursor.executemany(sql_nubosidad, data_nubosidad)
-        # self.pg_conn.commit()
+        self.pg_cursor.executemany(sql_nubosidad, data_nubosidad)
+        self.pg_conn.commit()
+
+        # limpieza y guardar lote tmaxtmin
+        # guardar tmaxtmin
+        sql_tmaxtmin, data_tmaxtmin = ingresar_tabla_tmaxtmin(df)
+        self.pg_cursor.executemany(sql_tmaxtmin, data_tmaxtmin)
+        self.pg_conn.commit()
 
         self._cerrar_conexion()

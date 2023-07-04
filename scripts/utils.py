@@ -1,10 +1,12 @@
-import csv
-from decimal import Decimal
 import os
-from datetime import datetime
+import csv
 import shutil
 
-
+"""
+versión: 1.00, fecha : 20/06/2023
+Class Utils funciones utilitarias
+Copyright. INAMHI <www.inamhi.gob.ec>. Todos los derechos reservados.
+"""
 """
 escribir un archivo csv apartir de un array de tuplas
 """
@@ -15,6 +17,10 @@ def write_tuplas_csv(tuplas, nombre_archivo):
 
 """
 leer archivo csv
+Args:
+    nombre_archivo: string nombre de archivo
+Return:
+    matriz_datos: array de tuplas con datos del csv
 """
 def cargar_archivo_csv(nombre_archivo):
     matriz_datos = []
@@ -25,23 +31,11 @@ def cargar_archivo_csv(nombre_archivo):
     return matriz_datos
 
 
-def escribir_csv(datos, nombre_archivo):
-    with open(nombre_archivo, 'a', newline='') as archivo_csv:
-        escritor = csv.writer(archivo_csv)
-        for fila in datos:
-            fila_actualizada = []
-            for elemento in fila:
-                if isinstance(elemento, Decimal):
-                    fila_actualizada.append(str(elemento))
-                else:
-                    fila_actualizada.append(elemento)
-            escritor.writerow(fila_actualizada)
-
-
-
-
 """
 escribir un csv apartir de un array de strings
+Args:
+    array_strings:array de string con datos
+    nombre_archivo:string con nombre del archivo
 """
 def csv_write_array_string(array_strings, nombre_archivo):
     with open(nombre_archivo, 'a', newline='') as archivo_csv:
@@ -52,6 +46,9 @@ def csv_write_array_string(array_strings, nombre_archivo):
 
 """
 crear carpeta
+Args:
+    nombre_carpeta:string con nombre carpeta
+    ruta_carpeta:string ruta de carpeta
 """
 def crear_carpeta(nombre_carpeta, ruta_carpeta=None):
     if ruta_carpeta:
@@ -68,6 +65,8 @@ def crear_carpeta(nombre_carpeta, ruta_carpeta=None):
 
 """
 elimnar carpeta con archivos
+Args:
+    ruta_carpeta:string con ruta de carpeta
 """
 def borrar_carpeta(ruta_carpeta):
     if os.path.exists(ruta_carpeta):

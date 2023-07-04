@@ -1,8 +1,20 @@
 from scripts import utils
 from scripts import constants
 import pandas as pd
+"""
+versión: 1.00, fecha : 20/06/2023
+Class Reporte limpiar datos y generar reportes
+Copyright. INAMHI <www.inamhi.gob.ec>. Todos los derechos reservados.
+"""
 
-
+"""
+escribir csv el total de datos no nulos a guardar por variable_hora
+Args:
+    codigo: codigo de la estacion
+    hora: string hora de toma dato 07,13,19
+    variable: variable de cual se va a genera reporte ev,nu,....
+    df_reporte:dataframe con los datos de una variable especifica
+"""
 def total_por_variable(codigo, hora, variable, df_reporte):
     total_ts = (codigo, f"{variable}{hora}", df_reporte[variable].count(), df_reporte.shape[0])
     utils.write_tuplas_csv([total_ts], constants.NOMBRE_CARPETA + "/total_por_variable.csv")
@@ -67,3 +79,22 @@ def fechas_no_registrada_por_variable(codigo, hora, variable,df_reporte,nombre_a
         tupla_no_guardados.append((tupla_temp[0][0], codigo, variable + str(hora), len(tupla_temp)))
 
     utils.write_tuplas_csv(tupla_no_guardados, constants.NOMBRE_CARPETA + f"/{nombre_archivo}.csv")
+
+def desviacion_estandar(codigo, hora, variable, df_reporte, nombre_archivo):
+    df_estandar = df_reporte[['fecha_toma', variable]]
+    media = df_estandar[variable].mean()
+    desviacion_estandar = df_estandar[variable].std()
+
+    limite_inferior = media - 2 * desviacion_estandar
+    limite_superior = media + 2 * desviacion_estandar
+
+    datos_fuera_del_rango = df_estandar[(df_estandar[variable] < limite_inferior) | (df_estandar[variable] > limite_superior)]
+
+    print(media)
+    print(desviacion_estandar)
+    print(limite_inferior)
+    print(limite_superior)
+    print(df_reporte.shape[0])
+    print(datos_fuera_del_rango.shape[0])
+    print(datos_fuera_del_rango.head(5))
+    exit(0)

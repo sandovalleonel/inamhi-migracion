@@ -1,0 +1,19 @@
+total_por_variable = total de datos migrados por variable
+codigo,variable(hora),total_no_nulos,total_datos
+M0001,ts7,16393,16622
+
+
+(total)por_variable_mayo_o_menor = total de datos menor o mayo a un parametro establecido
+codigo,variable(hora),total
+M0001,ev7,3815
+
+datos_diferentes_precipitacion = datos diferentes entre tabla clm0002 y pvl002
+fecha,rr07_clm0002,rr13_clm0002,rr19_clm0002,rr07_pvl002,rr13_pvl002,rr19_pvl002,rr07_migrada,rr13_migrada,rr19_migrada,estacion
+1977-06-27 00:00:00,0.0,0.0,0.0,888.8,0.0,0.0,0.0,0.0,0.0,M0001
+
+fecha,rr07_1ero,rr13_1ero,rr19_1ero,rr07_32dia,rr13_32dia,rr19_32dia,total_diferentes,estacion
+1977-07-01 00:00:00,0.0,0.0,0.0,0.0,999.9,999.9,2,M0001
+
+fechas_no_registradas = listados de datos nulos seguidos mayores a 2 dias
+fecha_primer_nulo,estacion,variable_hora,total_vacios
+1978-07-02 07:00:00,M0001,ev7,12

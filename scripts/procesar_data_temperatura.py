@@ -5,6 +5,11 @@ from scripts import reporte_comun
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_colwidth', None)
+"""
+versión: 1.00, fecha : 20/06/2023
+Class Temperatura limpiar datos y generar reportes
+Copyright. INAMHI <www.inamhi.gob.ec>. Todos los derechos reservados.
+"""
 
 """
 recibe por estacion se separa las variables de tempertarua para cada hora registrada
@@ -77,8 +82,17 @@ def _reportes_temperatura(df_total, codigo, hora):
     reporte_comun.total_por_variable(codigo, hora, "th", df_total)
 
     # temperatura masyor a 40
+    temperatu_maxima_reporte = 40
+    nombre_archivo = f'(total)temperatura_mayor_a_{temperatu_maxima_reporte}'
+    reporte_comun.total_registros_mayores_por_variable(codigo,hora,'ts',temperatu_maxima_reporte,df_total,nombre_archivo)
+    reporte_comun.total_registros_mayores_por_variable(codigo,hora,'th',temperatu_maxima_reporte,df_total,nombre_archivo)
 
     # temperatura menor a 5
+    temperatura_minima_reporte = -5
+    nombre_archivo = f'(total)temperatura_menor_a_{temperatura_minima_reporte}'
+    reporte_comun.total_registros_menores_por_variable(codigo,hora,'ts',temperatura_minima_reporte,df_total,nombre_archivo)
+    reporte_comun.total_registros_menores_por_variable(codigo,hora,'th',temperatura_minima_reporte,df_total,nombre_archivo)
+
 
     ################## fecha sin registrar datos ##################
     nombre_archivo = 'dato_no_tegistrado_temeperatura(fechas)'

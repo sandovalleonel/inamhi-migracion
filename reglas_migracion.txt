@@ -1,30 +1,48 @@
-Reportes generales
+LISTADO DE VARIABLES A MIGRAR
+tmax
+tmin
+ts(07,13,19)
+th(07,13,19)
+rr(07,13,19)
+ev(07,13,19)
+nu(07,13,19)
+dv(07,13,19)
+vv(07,13,19)
+an(07,13,19)
+
+CREACION FECHA DE REGISTRO
+-tomar la columan anio,mes,dia para formar la fecha
+-la hora se toma de cada columna en las variables a guardar
+-se genera una fecha final con ora especifica dependiendo la columna
+
+
+reglas
+    -si existen valores 9.9,99.9... etc remplazar ese valor con nulo
+    -las columnas con valores nulos si deben se guardadas
+    -los registros con valores 888.88 remplezar por -888.88
+
+
+reglas precipitacion
+    -obtener datos de una tabla secundaria mch.plv0002
+    -si existen registros en fecha  tabla mch.clm0002 y esa fecha no existe en mch.plv0002 guardar los datos que tiene mch.clm0002
+    -si existen registros en fecha  tabla mch.plv0002 y esa fecha no existe en mch.clm0002 guardar los datos que tiene mch.clm0002
+    -si las dos tablas existen datos en la misma fecha y son iguales guardar el dato sin novedad
+    -si las dos tablas existen datos en la misma fecha y son diferentes guardar el dato de la tabla mch.clm0002 y identificar ese dato para generar un reporte
+
+
+
+Reportes
 -numero de estaciones migradas
 -numeor de estaciones no migradas
 -saber el total de valores migrados por variable y por estacion
--numero de saltos datos no guardados en saltos mayores a dos dias
--Número   de   datos   que   esta   +-   2   desviación   estándar   y   la   fecha   y   la fecha dónde están esos datos
-
-CREACION FECHA DE REGISTRO
--tomar la columan anio,mes,dia
--la hora se toma de cada columna en las variables a guardar
-
-REGLAS Y REPORTES PARA MIGRAR VARIABLES TEMPERATURA (ts07,ts13,ts19,th07,th13,th13)
-    reglas
-        -si existen valores 9.9,99.9... etc remplazar con nulos
-        -las columnas con valores nulos si deben se guardadas
-        -los registros con valores 888.88 remplezar por -888.88
-    reporte
-        -cuantos valores superan mas de 40
-        -valores menores a -5
-
-REGLAS Y REPORTES PARA MIGRAR VARIABLES PRECIPITACION (rr07,rr13,rr19)
-    reglas
-    -si existen valores 9.9,99.9... etc remplazar con nulos
-    -las columnas con valores nulos si deben se guardadas
-    -los registros con valores 888.88 remplezar por -888.88
-    -obtener datos de una tabla secundaria mch.plv0002
-    -si los datos estan en una tabla y en la otra no, guardar ese datos como correcto
-    -si en la dos tabla en la misma fecha existe un dato diferente en las tablas es error
-    -si en la dos tabla en la misma fecha existe un dato igual ese dato es correcto
-
+-numero de datos no guardados en saltos mayores a dos dias por variables
+-total de valores mayores a 30  por varibale_hora y estacion para temperatura
+-total de valores menores a -5  por varibale_hora y estacion para temperatura
+-total de valores negativos por variable_hora y por estacion para velocidad viento
+-total de valores negativos por variable_hora y por estacion para anemometro
+-total de valores mayores a 30  por varibale_hora y estacion para evaporacion
+-total de valores negativos por variable_hora y por estacion para evaporacion
+-total de valores mayores a 200  por varibale_hora y estacion para precipitacion*
+-total de valores negativos por variable_hora y por estacion para precipitacion*
+-datos diferentes entre la tabla mch.clm0002 y mch.plv0002 en la misma fecha
+-datos diferentes entre registros del dia 32 con el primero del siguiente mes

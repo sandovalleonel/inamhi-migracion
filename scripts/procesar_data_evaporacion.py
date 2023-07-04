@@ -1,8 +1,12 @@
 from scripts import constants
-from scripts import utils
 import pandas as pd
 from scripts import reporte_comun
 
+"""
+versión: 1.00, fecha : 20/06/2023
+Class Evaporacion limpiar datos y generar reportes
+Copyright. INAMHI <www.inamhi.gob.ec>. Todos los derechos reservados.
+"""
 
 def ingresar_tabla_evaporacion(df_datos):
     sql = f"INSERT INTO convencionales2._614161h" \
@@ -28,7 +32,13 @@ def ingresar_tabla_evaporacion(df_datos):
 
     return (sql, tupla_total) if constants.SAVE_DATA else (sql, [])
 
-
+"""
+limpiar valores de la variable evaporacion en una hora especifica
+Args:
+    df_evaporacion
+    hora
+    codigo
+"""
 def _limpiar_diccionario_evaporacion(df_evaporacion, hora, codigo):
     columna = 'ev' + hora
     df_evaporacion = df_evaporacion.rename(columns={columna: 'ev'})
@@ -61,10 +71,19 @@ def _reportes_evaporacion(df_total, codigo, hora):
     reporte_comun.total_por_variable(codigo, hora, "ev", df_total)
 
     ##valores negativos
-    reporte_comun.registros_menores_por_variable(codigo, hora, 'ev', -100, df_total, 'negativos_test')
+    evap_min_reporte = 0
+    nombre_archivo = f'(total)evaporacion_menor_a_{evap_min_reporte}'
+    reporte_comun.registros_menores_por_variable(codigo, hora, 'ev', evap_min_reporte, df_total, nombre_archivo)
 
     ##valores mayoresa a 30
+    evap_max_reporte = 30
+    nombre_archivo = f'(total)evaporacion_mayor_a_{evap_max_reporte}'
+    reporte_comun.total_registros_mayores_por_variable(codigo,hora,'ev',evap_max_reporte,df_total,nombre_archivo)
 
     ################## fecha sin registrar datos ##################
     nombre_archivo = 'dato_no_tegistrado_evaporacion(fechas)'
     reporte_comun.fechas_no_registrada_por_variable(codigo, hora, 'ev', df_total, nombre_archivo)
+
+    ################desviacion +-2#################################
+    #nombre_archivo = '(desviacion)_evaporacion'
+    #reporte_comun.desviacion_estandar(codigo,hora,'ev',df_total,nombre_archivo)
