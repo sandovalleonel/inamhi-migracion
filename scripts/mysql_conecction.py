@@ -4,6 +4,7 @@ import mysql.connector
 versión: 1.00, fecha : 20/06/2023
 Class Mysql crear una coneccion obtener ddatos de la base
 Copyright. INAMHI <www.inamhi.gob.ec>. Todos los derechos reservados.
+
 """
 
 
